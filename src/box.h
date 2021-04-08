@@ -15,7 +15,44 @@ public:
 
    virtual bool hit(const ray& r, hit_record& rec) const override
    {
-      // todo
+       using namespace glm;
+       float tmin = -LONG_MAX; 
+       float tmax = LONG_MAX;
+       vec3 sides[] = { ax, ay, az};
+       vec3 tops[] = { hx, hy, hz };
+       point3 p = c - r.orig;
+       for (int i = 0; i < 2; i++) {
+           float e = dot(sides[i], p);
+           float f = dot(sides[i], r.dir);
+           if (abs(f) > eps) {
+               //not sure what hi was intended to be in the doctumentation 
+               float t1 = (e + tops[i].length()) / f;
+               float t2 = (e - tops[i].length()) / f; 
+               if (t1 > t2) {
+                   swap(t1, t2);
+               }
+               if (t1 > tmin) {
+                   tmin = t1;
+               }
+               if (t2 < tmax) {
+                   tmax = t2;
+               }
+               if (tmin > tmax) {
+                   return false;
+               }
+               if (tmax < 0) {
+                   return false;
+               }
+               else if (-e - hi > 0 || -e + hi < 0) return -1;
+               if (tmin > 0) {
+                   return true;
+            }
+               else {
+                   return true;
+               }
+           }
+       }
+
       return false;
    }
 

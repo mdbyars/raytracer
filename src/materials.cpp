@@ -74,13 +74,16 @@ void ray_trace(ppm_image& image)
    shared_ptr<material> metalRed = make_shared<metal>(color(1, 0, 0), 0.3f);
    shared_ptr<material> glass = make_shared<dielectric>(1.5f);
    shared_ptr<material> phongDefault = make_shared<phong>(camera_pos);
+   shared_ptr<material> vanta = make_shared<vantaBlack>(camera_pos);
+
 
    hittable_list world;
-   world.add(make_shared<sphere>(point3(-2.25, 0, -1), 0.5f, phongDefault));
+   world.add(make_shared<sphere>(point3(-2.25, 0, -1), 0.5f, vanta));
    world.add(make_shared<sphere>(point3(-0.75, 0, -1), 0.5f, glass));
    world.add(make_shared<sphere>(point3(2.25, 0, -1), 0.5f, metalRed));
    world.add(make_shared<sphere>(point3(0.75, 0, -1), 0.5f, matteGreen));
    world.add(make_shared<sphere>(point3(0, -100.5, -1), 100, gray));
+   //world.add(make_shared<sphere>(point3(0, -100.5, -1), 100, vantaBlack));
 
 
    // Ray trace
@@ -104,3 +107,4 @@ void ray_trace(ppm_image& image)
 
    image.save("materials.png");
 }
+//start with this for part 6

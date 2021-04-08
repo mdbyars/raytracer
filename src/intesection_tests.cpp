@@ -48,7 +48,20 @@ void test_sphere(const sphere& s, const ray& r, bool hits, const hit_record& des
       check(hit.front_face == desired.front_face, "error: front facing incorrect", hit, r);
    }
 }
+/*
+void test_box(const box& s, const ray& r, bool hits, const hit_record& desired) {
+    hit_record hit;
+    bool result = s.hit(r, hit);
 
+    check(result == hits, "error: ray should hit", hit, r);
+    if (hits) {
+        check(vecEquals(hit.p, desired.p), "error: position incorrect:", hit, r);
+        check(vecEquals(hit.normal, desired.normal), "error: normal incorrect:", hit, r);
+        check(equals(hit.t, desired.t), "error: hit time incorrect", hit, r);
+        check(hit.front_face == desired.front_face, "error: front facing incorrect", hit, r);
+    }
+}
+*/
 int main(int argc, char** argv)
 {
    shared_ptr<material> empty = 0; 
@@ -79,6 +92,12 @@ int main(int argc, char** argv)
                ray(point3(0, 0, 3), vec3(0, 1,-3)), // ray outside/towards sphere (hit)
                true, 
                hit_record{vec3(0,0.3432f, 1.9703f), vec3(0,0.1716f, 0.9851f), 0.3432f, true, empty}); 
+
+  // box s()
+  // test_box(s,
+   //    ray(point3(0, 0, 3), vec3(0, 1, -3)), // ray outside/towards sphere (hit)
+   //    true,
+   //    hit_record{ vec3(0,0.3432f, 1.9703f), vec3(0,0.1716f, 0.9851f), 0.3432f, true, empty });
 
    // TODO: Your tests here
 }

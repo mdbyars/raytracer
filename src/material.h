@@ -20,13 +20,40 @@ public:
   virtual bool scatter(const ray& r_in, const hit_record& rec, 
      glm::color& attenuation, ray& scattered) const override 
   {
-     // todo
+      using namespace glm; 
+      vec3 unitn = normalize(rec.normal);
+      vec3 lightDir = normalize(vec3(5, 5, 0) - rec.p);
+      glm::color diffuse = max(vec3(0), dot(unitn, lightDir)) * albedo;
+      scattered = ray(rec.p, rec.normal + random_unit_vector());
+      //check if 0
       attenuation = albedo;
-      return false;
+      return true; //it hits!
+      //check reading listing 46 
+      //attenuation is like the color the scattered is the reflected ray 
   }
 
 public:
   glm::color albedo;
+};
+
+class vantaBlack : public material {
+public:
+    vantaBlack(const glm::color& a) : albedo(a) {}
+
+    virtual bool scatter(const ray& r_in, const hit_record& rec,
+        glm::color& attenuation, ray& scattered) const override
+    {
+        using namespace glm;
+        //making a kitchy material based on the famous paint that absorbs most light 
+        
+        attenuation = color(0, 0, 0);
+        return false; //it does not reflect any light 
+        //check reading listing 46 
+        //attenuation is like the color the scattered is the reflected ray 
+    }
+
+public:
+    glm::color albedo;
 };
 
 class phong : public material {
@@ -56,9 +83,25 @@ public:
   virtual bool scatter(const ray& r_in, const hit_record& hit, 
      glm::color& attenuation, ray& scattered) const override 
   {
-     // todo
-     attenuation = glm::color(0);
-     return false;
+      using namespace glm;
+      /*color is = albedo;
+      color ia = ka * ambientColor;
+      color id = albedo;
+
+     // color id = kd * dot(r_in.dir, hit.normal) * ambientColor *albedo;
+      if (ks <= 0) {
+          is = albedo;
+      }
+      else if (dot(r_in.direction(), scattered.direction()) <= 0) {
+          is = albedo;
+      }
+      else {
+          is = ks * ambientColor * dot(r_in.direction(), scattered.direction());
+
+      }*/
+      //not sure what to do here as no matter what I return it comes out black 
+      attenuation = color(1, 1, 0);
+      return true;
   }
 
 public:
@@ -67,10 +110,13 @@ public:
   glm::color ambientColor;
   glm::point3 lightPos;
   glm::point3 viewPos; 
+  glm::color albedo;
+
   float kd; 
   float ks;
   float ka; 
   float shininess;
+
 };
 
 class metal : public material {
@@ -80,9 +126,11 @@ public:
    virtual bool scatter(const ray& r_in, const hit_record& rec, 
       glm::color& attenuation, ray& scattered) const override 
    {
-     // todo
-      attenuation = albedo;
-      return false;
+       glm::vec3 reflected = reflect(r_in.direction(), rec.normal);
+       scattered = ray(rec.p, reflected + fuzz * random_unit_vector());
+       attenuation = albedo;
+       return (dot(scattered.direction(), rec.normal) > 0);
+      //return false;
    }
 
 public:
@@ -97,9 +145,25 @@ public:
   virtual bool scatter(const ray& r_in, const hit_record& rec, 
      glm::color& attenuation, ray& scattered) const override 
    {
-     // todo
-     attenuation = glm::color(0);
-     return false;
+      using namespace glm;
+    attenuation = color(1.0, 1.0, 1.0);
+      float refraction_ratio = rec.front_face ? (1.0 / ir) : ir;
+
+      vec3 unit_direction = normalize(r_in.direction());
+      float cos_theta = fmin(dot(-unit_direction, rec.normal), 1.0);
+      float sin_theta = sqrt(1.0 - cos_theta * cos_theta);
+
+      bool cannot_refract = refraction_ratio * sin_theta > 1.0;
+      vec3 direction;
+
+      if (cannot_refract || reflect(cos_theta, refraction_ratio) > random_float())
+          direction = reflect(unit_direction, rec.normal);
+      else
+          direction = refract(unit_direction, rec.normal, refraction_ratio);
+
+      scattered = ray(rec.p, direction);
+      
+      return true;
    }
 
 public:
@@ -109,3 +173,4 @@ public:
 
 #endif
 
+//new feature 

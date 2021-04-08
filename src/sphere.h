@@ -11,6 +11,8 @@ public:
    sphere(const glm::point3& cen, float r, std::shared_ptr<material> m) : 
       center(cen), radius(r), mat_ptr(m) {};
 
+   float hit(glm::point3 center, const ray& r, float radius);
+
    virtual bool hit(const ray& r, hit_record& rec) const override;
 
 public:
@@ -19,7 +21,29 @@ public:
    std::shared_ptr<material> mat_ptr;
 };
 
+float sphere::hit(glm::point3 center, const ray& r, float radius) {
+    //implementing sphere intersection 
+    float t;
+    glm::vec3 el = center - r.origin();
+    float s = dot(el, r.origin());
+    float elSqr = dot(el, el);
+    float rSqr = radius * radius;
+    if (s<0 && elSqr > rSqr) return -1; // ray does not hit the sphere 
+    float mSqr = elSqr - s * s;
+    if (mSqr > rSqr) return -1;
+    float q = sqrt(rSqr - mSqr);
+    if (elSqr > rSqr) {
+        float t = s - q;
+    }
+    else {
+        float t = s + q;
+    }
+    return t;
+}
+
 bool sphere::hit(const ray& r, hit_record& rec) const {
+
+
    glm::vec3 oc = r.origin() - center;
    float a = glm::dot(r.direction(), r.direction());
    float half_b = glm::dot(oc, r.direction());
@@ -43,6 +67,7 @@ bool sphere::hit(const ray& r, hit_record& rec) const {
    rec.set_face_normal(r, outward_normal);
 
    return true;
+   //fill in the hit record and use bool instead of float change geometric method to build up the hit record get then ormal wher eyou hit and we need the time and the hit poitn t
 }
 
 #endif

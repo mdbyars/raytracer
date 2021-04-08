@@ -20,6 +20,10 @@ color ray_color(const ray& r, const hittable_list& world, int depth)
    {
       return color(0);
    }
+  /* if (world.hit(r, 0, infinity, rec)) {
+       point3 target = rec.p + rec.normal + random_unit_vector();
+       return ray_color(ray(rec.p, target - rec.p), world, depth -1);
+   }*/
 
    if (world.hit(r, 0.001f, infinity, rec))
    {
@@ -34,6 +38,9 @@ color ray_color(const ray& r, const hittable_list& world, int depth)
    }
    vec3 unit_direction = normalize(r.direction());
    auto t = 0.5f * (unit_direction.y + 1.0f);
+   
+   //vec3 unit_direction = unit_vector(r.direction());
+   //auto t = 0.5 * (unit_direction.y() + 1.0);
    return (1.0f - t) * color(1, 1, 1) + t * color(0.5f, 0.7f, 1.0f);
 }
 
@@ -51,6 +58,7 @@ color normalize_color(const color& c, int samples_per_pixel)
    b = sqrt(b);
 
    return color(r, g, b);
+
 }
 
 void ray_trace(ppm_image& image)
