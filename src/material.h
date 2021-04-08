@@ -45,7 +45,7 @@ public:
     {
         using namespace glm;
         //making a kitchy material based on the famous paint that absorbs most light 
-        
+        //having troubles pushing
         attenuation = color(0, 0, 0);
         return false; //it does not reflect any light 
         //check reading listing 46 
