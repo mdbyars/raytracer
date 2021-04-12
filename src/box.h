@@ -3,6 +3,7 @@
 
 #include "hittable.h"
 #include "AGLM.h"
+#include "material.h"
 
 class box : public hittable {
 public:
@@ -24,12 +25,12 @@ public:
        for (int i = 0; i < 2; i++) {
            float e = dot(sides[i], p);
            float f = dot(sides[i], r.dir);
-           if (abs(f) > eps) {
+           if (abs(f) > 0.00001) {
                //not sure what hi was intended to be in the doctumentation 
                float t1 = (e + tops[i].length()) / f;
                float t2 = (e - tops[i].length()) / f; 
                if (t1 > t2) {
-                   swap(t1, t2);
+                   std::swap(t1, t2);
                }
                if (t1 > tmin) {
                    tmin = t1;
@@ -43,7 +44,7 @@ public:
                if (tmax < 0) {
                    return false;
                }
-               else if (-e - hi > 0 || -e + hi < 0) return -1;
+               else if (-e - tops[i].x > 0 || -e + tops[i].x < 0) return -1;
                if (tmin > 0) {
                    return true;
             }

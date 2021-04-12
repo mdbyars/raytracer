@@ -84,23 +84,50 @@ public:
      glm::color& attenuation, ray& scattered) const override 
   {
       using namespace glm;
-      /*color is = albedo;
+    //  color is = albedo;
+    //  color ia = ka * ambientColor;
+     // color id = albedo;
+      //I = id + is + ia
+      //ambient ia = ka la
+      //diffuse id = kd (l.nhat)ld md
+      //is = ks ls v.r^alpha
+
       color ia = ka * ambientColor;
-      color id = albedo;
+      vec3 l = lightPos - hit.p;
+      color id = kd * diffuseColor * max(vec3(0, 0, 0), dot(normalize(l), normalize(hit.normal)));
+     // if (dot(r_in.dir, hit.normal) <= 0) {
+      //    id = albedo;
+    //  }
+      vec3 r = 2 * dot(normalize(l), normalize(hit.normal)) * hit.normal - l;
+  //    else {
+     //     id = kd * dot(r_in.dir, hit.normal) * ambientColor * albedo;
+   //   }
+      point3 v = viewPos - hit.p;
+      color is = albedo;
+      if (dot(normalize(v), r) > 0) {
+          is = ks * specColor * pow(dot(normalize(v),r), shininess);
 
-     // color id = kd * dot(r_in.dir, hit.normal) * ambientColor *albedo;
-      if (ks <= 0) {
-          is = albedo;
       }
-      else if (dot(r_in.direction(), scattered.direction()) <= 0) {
-          is = albedo;
-      }
+
+     // if (dot(r_in.direction(), scattered.direction()) <= 0) {
+       //   is = albedo;
+    //  }
       else {
-          is = ks * ambientColor * dot(r_in.direction(), scattered.direction());
+          is = ks * specColor * dot(normalize(v), r);
+      }
+     // else {
+       //   is = ks * ambientColor * dot(r_in.direction(), scattered.direction());
 
-      }*/
+     // }
       //not sure what to do here as no matter what I return it comes out black 
-      attenuation = color(1, 1, 0);
+      attenuation = is + ia + id;
+      
+      //attenuation = color(1, 1, 0);
+      //using the pieces from lambertian to perform scattering 
+      vec3 unitn = normalize(hit.normal);
+      vec3 lightDir = normalize(vec3(5, 5, 0) - hit.p);
+      glm::color diffuse = max(vec3(0), dot(unitn, lightDir)) * albedo;
+      scattered = ray(hit.p, hit.normal + random_unit_vector());
       return true;
   }
 

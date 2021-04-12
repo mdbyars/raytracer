@@ -12,6 +12,7 @@ using namespace glm;
 using namespace std;
 
 float eps = 0.0001f; // epsilon for comparing floats
+//shared_ptr<material> vanta = make_shared<vantaBlack>(vec3(0, 0, 0));
 
 template <class T>
 bool vecEquals(T a, T b)
@@ -48,7 +49,7 @@ void test_sphere(const sphere& s, const ray& r, bool hits, const hit_record& des
       check(hit.front_face == desired.front_face, "error: front facing incorrect", hit, r);
    }
 }
-/*
+
 void test_box(const box& s, const ray& r, bool hits, const hit_record& desired) {
     hit_record hit;
     bool result = s.hit(r, hit);
@@ -61,7 +62,20 @@ void test_box(const box& s, const ray& r, bool hits, const hit_record& desired) 
         check(hit.front_face == desired.front_face, "error: front facing incorrect", hit, r);
     }
 }
-*/
+
+void test_plane(const plane& s, const ray& r, bool hits, const hit_record& desired) {
+    hit_record hit;
+    bool result = s.hit(r, hit);
+
+    check(result == hits, "error: ray should hit", hit, r);
+    if (hits) {
+        check(vecEquals(hit.p, desired.p), "error: position incorrect:", hit, r);
+        check(vecEquals(hit.normal, desired.normal), "error: normal incorrect:", hit, r);
+        check(equals(hit.t, desired.t), "error: hit time incorrect", hit, r);
+        check(hit.front_face == desired.front_face, "error: front facing incorrect", hit, r);
+    }
+}
+
 int main(int argc, char** argv)
 {
    shared_ptr<material> empty = 0; 
@@ -92,12 +106,17 @@ int main(int argc, char** argv)
                ray(point3(0, 0, 3), vec3(0, 1,-3)), // ray outside/towards sphere (hit)
                true, 
                hit_record{vec3(0,0.3432f, 1.9703f), vec3(0,0.1716f, 0.9851f), 0.3432f, true, empty}); 
+   //????
+  // shared_ptr<material> vanta = make_shared<vantaBlack>(camera_pos);
+  // box m = box(point3(0, 0, 0), vec3(1, 0, 0), vec3(0, 1, 0), vec3(0, 0, 1), vec3(0.5f, 0, 0), vec3(0, 0.5f, 0), vec3(0, 0, 0.5f), empty);
+   //test_box(m,
+     //  ray(point3(0, 0, .3), vec3(0, .1, .1)), // ray outside/towards sphere (hit)
+      // true,
+      // hit_record{ vec3(0, 1, 2), vec3(0, .5,1), 1, true, empty });
 
-  // box s()
-  // test_box(s,
-   //    ray(point3(0, 0, 3), vec3(0, 1, -3)), // ray outside/towards sphere (hit)
-   //    true,
-   //    hit_record{ vec3(0,0.3432f, 1.9703f), vec3(0,0.1716f, 0.9851f), 0.3432f, true, empty });
-
+  // plane p = plane(point3(1, 1, 1), vec3(2, 2, 2), empty);
+   //test_plane(p, ray(point3(0, 0, .3), vec3(0, .1, .1)), true, hit_record{ vec3(0, 1, 2), vec3(0, .5,1), 1, false, empty });
    // TODO: Your tests here
+
+   //test_triangle(t, ray(point3(0, 0, 0), vec3(0, 0, 1)), true, hit_record{ vec3(0, 0, 0), vec3(1, 1, 1), true, empty);
 }

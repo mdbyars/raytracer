@@ -78,12 +78,12 @@ void ray_trace(ppm_image& image)
 
 
    hittable_list world;
-   world.add(make_shared<sphere>(point3(-2.25, 0, -1), 0.5f, vanta));
-   world.add(make_shared<sphere>(point3(-0.75, 0, -1), 0.5f, glass));
+   world.add(make_shared<sphere>(point3(-2.25, 0, -1), 0.5f, phongDefault));
+   world.add(make_shared<sphere>(point3(-.75, 0, -1), 0.5f, glass));
    world.add(make_shared<sphere>(point3(2.25, 0, -1), 0.5f, metalRed));
    world.add(make_shared<sphere>(point3(0.75, 0, -1), 0.5f, matteGreen));
    world.add(make_shared<sphere>(point3(0, -100.5, -1), 100, gray));
-   //world.add(make_shared<sphere>(point3(0, -100.5, -1), 100, vantaBlack));
+  // world.add(make_shared<sphere>(point3(0, -100.5, -1), 100, vanta));
 
 
    // Ray trace
